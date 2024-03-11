@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HTTP request for Goja's gojax-fetch library</title>
+    <script type="text/javascript" src="wasm_exec.js"></script>
+</head>
+<body>
+<h2>HTTP Request from inside WASM using gojax-fetch extension for Goja JavaScript virtual machine</h2>
+
+<p>This example uses <a href="https://github.com/olebedev/gojax/tree/master/fetch/">gojax/fetch library</a>.</p>
+<p>See the output in browser developer console.</p>
+
+<p>Actual code:</p>
+<pre>
+
+fetch('https://httpbin.org/anything')
+  .then(function(res) {
+    return res.text();
+  }).then(function(txt) {
+    console.log(txt);
+    exitloop();
+  });
+
+</pre>
+<script type="text/javascript">
+    const go = new Go();
+    WebAssembly.instantiateStreaming(fetch('main.wasm'), go.importObject).then((result) => {
+        go.run(result.instance);
+    });
+</script>
+<section>
+    <h4>Info</h4>
+    <ul>
+        <li><a href="https://github.com/wasm-outbound-http-examples/js-in-go/tree/main/browser-and-deno-gojax-fetch/">Demo source code</a></li>
+        <li>Versions used on the moment of build:<small>
+            Golang: 1.22.1,
+            Gojax: <a href="https://github.com/olebedev/gojax/tree/bb153be84336">v0.0.0-20170318114811-bb153be84336</a>,
+            Goja: <a href="https://github.com/dop251/goja/tree/e401ed450204">v0.0.0-20240220182346-e401ed450204</a>,
+            goja_nodejs: <a href="https://github.com/dop251/goja_nodejs/tree/27eeffc9c235">v0.0.0-20240221231712-27eeffc9c235</a>,
+            goproxy: <a href="https://github.com/elazarl/goproxy/tree/v1.1">v1.0.0-20180725130230-947c36da3153</a>.
+        </small></li>
+    </ul>
+</section>
+<footer><small>Created for (wannabe-awesome) <a href="https://github.com/vasilev/HTTP-request-from-inside-WASM">list</a></small></footer>
+</body>
+</html>
